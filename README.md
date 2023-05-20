@@ -1,4 +1,4 @@
-# Modul_3
+# Modul_2
 <details>
   <summary>Пред- и постусловия</summary>
   
@@ -125,6 +125,22 @@ pytest test_login.py -s
 
 ```
 В результате, мы увидим наш заветный принт
+
+```
+
+platform darwin -- Python 3.10.5, pytest - 7.2.0, pluggy-1.0.0
+rootdir: /User/Mila/PytestClasses/1_Module_Pytest/lesson_2
+collected 1 item
+
+______________________________________
+test_login.py Выполняюсь до теста    !
+                                     !
+Выполняюсь после теста               !
+______________________________________
+
+	
+	
+```
 
 
 
