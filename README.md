@@ -194,6 +194,146 @@ test_login.py Выполняюсь до теста
 		
 ```
 
+</details>
+
+<details>
+<summary>Запуск тестов по их названию</summary>	
+	
+## Запуск тестов по их названию:
+
+Часто есть необходимость запустить какой-то конкретный тест, а не кучу, соответственно, было бы здорово иметь такую возможность, и она есть)
+
+Чтобы запустить тест по его названию, используйте опцию -k при запуске pytest.
+Давайте рассмотрим пример, в котором у нас есть два следующих теста:
+
+```
+
+class TestLogin: # Название тестового класса
+
+    def setup(self):
+        print("Выполняюсь до теста")
+        self.service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=self.service)
+	self.driver.get("https://demoqa.com/login")
+
+    def test_open_login_page(self):
+        assert self.driver.current_url == "https://demoqa.com/login", "Ошибка"
+	
+    def test_check_availiability_after_refresh(self):
+        self.driver.refresh()
+        assert "Заголовок страницы" in self.driver.page_source, "Страница не загрузилась"
+
+    def teardown(self):
+        self.driver.close()
+        print("Выполняюсь после теста")
+	
+```
+Но нам нужно запустить конкретный тест, к примеру, test_open_login_page, тогда для этого мы просто передаем название теста в качестве аргумента опции -k:
+
+```
+
+  pytest -k "test_open_login_page"
+
+		
+```
+
+pytest -k "test_open_login_page"
+
+</details>
+
+<details>
+  <summary>Дебаг тестов через pytest</summary>
+  
+## Дебаг тестов через pytest:
+
+В pytest для дебага тестов я рекомендую использовать встроенный метод:
+- `pytest.set_trace()` - данный метод служит брейкпоинтом
+
+Использование `pytest.set_trace()` в коде максимально простое, вы просто вставляете эту строчку там, где хотите остановить выполнение теста.
+
+Но перед этим необходимо импортировать pytest в файл с нашими тестами:
+
+```
+import pytest
+```
+Пример использования `pytest.set_trace()`
+
+```
+import pytest
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+
+class TestLogin: # Название тестового класса
+
+    def setup(self):
+        print("Выполняюсь до теста")
+        self.service = Service(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=self.service)
+
+    def test_open_login_page(self):
+        self.driver.get("https://demoqa.com/login")
+	login_field = self.driver.find_element("xpath", "//input[@id='userName']")
+	pytest.set_trace() # Включаем дебаг
+	login_field.send_keys("Alexey")
+        assert login_field.get_attribute("value") == "Alexey", "Некорректный логин"
+		
+    def teardown(self):
+        self.driver.close()
+	print("Выполняюсь после теста")
+```
+После того, как мы запустим тест, он в обычном режиме начнет свое выполнение, но остановится в том месте, где мы прописали `pytest.set_trace()`
+
+После остановки теста, в терминале появится интерфейс управления дебагом, тут все просто, не пугайтесь)
+
+```
+>/Users/Mila/Pytest02/lesson02
+-> login_field.send_keys("Mila")
+
+(Pdb)
+
+```
+
+Тут важно понять ЧТО мы с вами видим!
+- В первой строке мы видим исполняемый файл (файл с тестами)
+- Во второй строке видим следующий шаг теста (он даже обозначается стрелочкой next), который идет после установленного нами `pytest.set_trace()`
+- (Pdb) - строка ввода нашего дебагера
+
+Теперь, чтобы двигаться в режиме дебага, можно использовать 2 способа:
+
+1. Написать next в терминале, это переход на следующую строчку кода в нашем тесте.
+Соответственно, выполнится шаг `login_field.send_keys(”Mila”)` и будет предложен следующий шаг:
+
+```
+-> login_field.send_keys("Mila")
+(Pdb) next
+> /Users/Mila/.../lrsson02/test_login_page2.py(16)
+-> assert login_field.get_attribute("value") = "Mila", "Некорректный логин"
+
+(Pdb)
+```
+2. Скопировать нужную строчку кода и вставить в терминал, более гибкий способ, потому что мы можем писать любой код, что в некоторых случаях поможет найти решение или гибко определить проблему.
+
+```
+-> login_field.send_keys("Mila")
+(Pdb) assert login_field..get_attribute("value") = "Mila", "Некорректный логин"
+
+(Pdb)
+```
+
+После того, как вы закончили с дебагом, необходимо остановить дебаг режим, и это можно сделать просто прописав exit.
+
+<details>
+
+
+
+
+
+
+
+
 
 
 
