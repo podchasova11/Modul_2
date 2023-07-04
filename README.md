@@ -1,4 +1,4 @@
-# Modul_2
+
 <details>
   <summary>Пред- и постусловия</summary>
   
